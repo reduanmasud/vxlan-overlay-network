@@ -19,7 +19,7 @@ sudo apt install -y docker.io
 
 
 echo -e "${green} [3 ] ${clear} Creating subnet using docker network ... ... ..."
-echo -e -n "${red} Enter IP address with CIDR (ip/cidr) : ${clear}"
+echo -e -n "Enter IP address with CIDR ${green}(ip/cidr)${clear} : "
 read -r docker_subnet_ip
 echo -n "Docker Subnet key: " >> save.txt
 sudo docker network create --subnet $docker_subnet_ip vxlan-net >> save.txt
