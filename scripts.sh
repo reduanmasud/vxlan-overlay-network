@@ -65,6 +65,6 @@ fi
 
 echo -e -n "Do you want to check the IP address of Container ${green}(y/n)${clear} : "
 read -r yes_no2
-if [[ "$yes_no2" == "y"]]; then
+if [[ "$yes_no2" == "y" ]]; then
 sudo docker inspect ${container_id:12} | grep -E "(\"IPAddress\"..)[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}\""
 fi
