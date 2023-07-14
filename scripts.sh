@@ -32,8 +32,8 @@ echo -e "${green} [3 ] ${clear} Creating subnet using docker network ... ... ...
 echo -e -n "Enter IP address with CIDR ${green}(ip/cidr)${clear} : "
 read -r docker_subnet_ip
 echo -n "Docker Subnet key: " > save.txt
-sudo docker network create --subnet $docker_subnet_ip vxlan-net >> save.txt
-
+sudo docker network create --subnet $docker_subnet_ip vxlan-net >> subnet_key.txt
+cat subnet_key.txt >> save.txt
 echo "" >> save.txt
 
 echo -e -n "Do you want to check the list of network list ${green}(y/n)${clear} : "
