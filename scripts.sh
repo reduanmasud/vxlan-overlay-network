@@ -21,7 +21,7 @@ sudo ifconfig enp0s3 $static_ip
 
 fi
 
-echo -e "${green} [ 1 ] ${clear} {${yellow}Updating apt${clear}"
+echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
 sudo apt update
 
 echo -e "${green} [ 2 ] ${clear} ${yellow}Installing Docker.io ... ... ...${clear}"
@@ -50,6 +50,11 @@ sudo ip a
 fi
 
 echo -e "${green} [ 4 ] ${clear} ${yellow}Create and run docker container ...${clear}"
+
+echo -e "${yellow} Stopping all previous active containers ... ${clear}"
+docker stop $(docker ps -a -q)
+echo -e "${green}Done${clear}"
+
 echo -e -n "Enter IP address for docker container ${green}(ip)${clear} : "
 read -r docker_inside_ip
 echo -n "Docker Container ID: @" >> save.txt
