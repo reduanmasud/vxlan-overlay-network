@@ -10,6 +10,16 @@ cyan='\033[0;36m'
 # Clear the color after that
 clear='\033[0m'
 
+echo -e -n "${yellow}Do you want to add static Ip to NAT interface (y/n) : ${clear}"
+read static_ip_y
+
+if [[ "$static_ip_y" == "y" ]]; then
+
+echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
+read static_ip
+sudo ifconfig enp0s3 $static_ip
+
+fi
 
 echo -e "${green} [1 ] ${clear} Updating apt"
 sudo apt update
