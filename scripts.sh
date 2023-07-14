@@ -88,4 +88,48 @@ sudo docker exec ${container_id:0:12} sudo apt-get install -y net-tools
 echo -e "${yellow} Installing iputils-ping... ${clear}"
 sudo docker exec ${container_id:0:12} sudo apt-get install -y iputils-ping
 clear
-sudo docker exec -it ${container_id:0:12} bash
+# sudo docker exec -it ${container_id:0:12} bash
+
+echo -e -n "Do you want to check Bridge list ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+brctl show
+fi
+
+echo -e "${green} [ 6 ] ${clear} ${yellow}Setup vxlan ======================== ${clear}"
+echo -e -n "${yellow} Enter vxlan name: ${clear}"
+read -r vxlan_name
+echo -e -n "${yellow} Enter a id for vxlan: ${clear}"
+read -r vxlan_id
+echo -e -n "${yellow} Enter ip of 2nd host: ${clear}"
+read -r host2_ip
+echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3) ${clear}"
+read -r select_dev
+
+if [[ "$select_dev" == "0" ]]; then
+device="eth0"
+fi
+
+if [[ "$select_dev" == "1" ]]; then
+device="enp0s3"
+fi
+echo -e "${yellow} Creating vxlan...${clear}"
+sudo ip link add $vxlan_name type vxlan id $vxlan_id remote $host2_ip dstport 4789 dev $device
+echo -e "${yellow} Created ... ${clear}"
+
+echo -e "${yellow} Checking vxlan interface created ... ${clear}"
+ip a | grep "vxlen"
+
+echo -e "${green} [ 7 ] ${clear} ${yellow} make Interface UP ${clear}"
+sudo ip line set $vxlan_name UP
+
+#Get Bridge id
+ip a | grep -E -o -m 1 "br-(\w+)" > bridge_id.txt
+bridge_id=$(cat bridge_id.txt)
+
+echo -e "${green} [ 8 ] ${clear} ${yellow} Attaching newly created vxlan to bridge ${clear}"
+sudo brctl addif $bridge_id $vxlan_name
+
+
+echo -e "${green} [ 9 ] ${clear} ${yellow} Checking Route Table ${clear}"
+route -n
