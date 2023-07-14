@@ -80,6 +80,12 @@ fi
 echo -e "${green} [ 5 ] ${clear} ${yellow}Ping test ${docker_inside_ip} ${clear}"
 ping $docker_inside_ip -c 5
 
-echo -e "${yellow}Executing interactive at the docker${clear}"
+echo -e "${yellow} Container id ${container_id:0:12} ${clear}"
+echo -e "${yellow} Updating... ${clear}"
+sudo docker exec ${container_id:0:12} sudo apt-get update
+echo -e "${yellow} Installing net-tools... ${clear}"
+sudo docker exec ${container_id:0:12} sudo apt-get install -y net-tools
+echo -e "${yellow} Installing iputils-ping... ${clear}"
+sudo docker exec ${container_id:0:12} sudo apt-get install -y iputils-ping
 clear
-sudo docker exec -it ${container_id:0:12} bash apt-get update && apt-get install net-tools iputils-ping
+sudo docker exec -it ${container_id:0:12} bash
