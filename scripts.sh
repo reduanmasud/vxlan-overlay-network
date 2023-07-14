@@ -6,7 +6,7 @@ green='\033[0;32m'
 clear='\033[0m'
 
 
-echo -e "${green}[1 ] ${clear} Updating apt"
+echo -e "${green} [1 ] ${clear} Updating apt"
 sudo apt update
 
 
