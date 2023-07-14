@@ -62,6 +62,10 @@ echo -n "Docker Container ID: @" >> save.txt
 sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 > container_id.txt
 cat container_id.txt >> save.txt
 
+echo -n "Container ID Actual: " >> save.txt
+echo ${container_id:0:12} >> save.txt
+
+
 container_id=$( cat container_id.txt ) 
 rm container_id.txt
 
@@ -114,6 +118,7 @@ fi
 if [[ "$select_dev" == "1" ]]; then
 device="enp0s3"
 fi
+
 echo -e "${yellow} Creating vxlan...${clear}"
 sudo ip link add $vxlan_name type vxlan id $vxlan_id remote $host2_ip dstport 4789 dev $device
 echo -e "${yellow} Created ... ${clear}"
@@ -134,3 +139,10 @@ sudo brctl addif $bridge_id $vxlan_name
 
 echo -e "${green} [ 9 ] ${clear} ${yellow} Checking Route Table ${clear}"
 route -n
+
+
+echo -e -n "Do you want enter to the container ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+sudo docker exec -it ${container_id:0:12} bash
+fi
