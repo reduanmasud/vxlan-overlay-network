@@ -23,6 +23,7 @@ fi
 
 echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
 sudo apt update
+sudp apt install -y net-tools
 
 echo -e "${green} [ 2 ] ${clear} ${yellow}Installing Docker.io ... ... ...${clear}"
 sudo apt install -y docker.io
