@@ -52,7 +52,7 @@ echo -e -n "Enter IP address ${green}(ip)${clear} : "
 read -r docker_inside_ip
 echo -n "Docker Container ID: @" >> save.txt
 sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 > container_id.txt
-cat container_id.txt >> save.text
+cat container_id.txt >> save.txt
 
 container_id=$( cat container_id.txt ) 
 rm container_id.txt
