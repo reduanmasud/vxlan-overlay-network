@@ -40,4 +40,6 @@ fi
 echo -e "${green} [4 ] ${clear} Create and run docker container ..."
 echo -e -n "Enter IP address ${green}(ip)${clear} : "
 read -r docker_inside_ip
-sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000
+echo -n "Docker Container ID: "
+sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 >> save.txt
+
