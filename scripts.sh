@@ -21,14 +21,14 @@ sudo ifconfig enp0s3 $static_ip
 
 fi
 
-echo -e "${green} [1 ] ${clear} Updating apt"
+echo -e "${green} [ 1 ] ${clear} {${yellow}Updating apt${clear}"
 sudo apt update
 
-echo -e "${green} [2 ] ${clear} Installing Docker.io ... ... ..."
+echo -e "${green} [ 2 ] ${clear} ${yellow}Installing Docker.io ... ... ...${clear}"
 sudo apt install -y docker.io
 
 
-echo -e "${green} [3 ] ${clear} Creating subnet using docker network ... ... ..."
+echo -e "${green} [ 3 ] ${clear} ${yellow}Creating subnet using docker network ... ... ...${clear}"
 echo -e -n "Enter IP address with CIDR ${green}(ip/cidr)${clear} : "
 read -r docker_subnet_ip
 echo -n "Docker Subnet key: " > save.txt
@@ -49,8 +49,8 @@ if [[ "$check_ip_list" == "y" ]]; then
 sudo ip a
 fi
 
-echo -e "${green} [4 ] ${clear} Create and run docker container ..."
-echo -e -n "Enter IP address ${green}(ip)${clear} : "
+echo -e "${green} [ 4 ] ${clear} ${yellow}Create and run docker container ...${clear}"
+echo -e -n "Enter IP address for docker container ${green}(ip)${clear} : "
 read -r docker_inside_ip
 echo -n "Docker Container ID: @" >> save.txt
 sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 > container_id.txt
