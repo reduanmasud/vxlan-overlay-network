@@ -31,7 +31,7 @@ sudo apt install -y docker.io
 echo -e "${green} [3 ] ${clear} Creating subnet using docker network ... ... ..."
 echo -e -n "Enter IP address with CIDR ${green}(ip/cidr)${clear} : "
 read -r docker_subnet_ip
-echo -n "Docker Subnet key: " >> save.txt
+echo -n "Docker Subnet key: " > save.txt
 sudo docker network create --subnet $docker_subnet_ip vxlan-net >> save.txt
 
 echo -e -n "Do you want to check the list of network list ${green}(y/n)${clear} : "
@@ -51,9 +51,11 @@ echo -e "${green} [4 ] ${clear} Create and run docker container ..."
 echo -e -n "Enter IP address ${green}(ip)${clear} : "
 read -r docker_inside_ip
 echo -n "Docker Container ID: @" >> save.txt
-sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 >> save.txt
+sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 > container_id.txt
+cat container_id.txt >> save.text
 
-container_id=$( cat save.txt | grep -E "\@(.*)") 
+container_id=$( cat container_id.txt ) 
+rm container_id.txt
 
 echo -e -n "Do you want to check Container list ${green}(y/n)${clear} : "
 read -r yes_no
@@ -64,5 +66,5 @@ fi
 echo -e -n "Do you want to check the IP address of Container ${green}(y/n)${clear} : "
 read -r yes_no2
 if [[ "$yes_no2" == "y"]]; then
-sudo docker inspect $container_id | grep -E "(\"IPAddress\"..)[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}\""
+sudo docker inspect ${container_id:12} | grep -E "(\"IPAddress\"..)[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}\""
 fi
