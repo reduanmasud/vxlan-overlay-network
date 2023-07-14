@@ -50,11 +50,19 @@ fi
 echo -e "${green} [4 ] ${clear} Create and run docker container ..."
 echo -e -n "Enter IP address ${green}(ip)${clear} : "
 read -r docker_inside_ip
-echo -n "Docker Container ID: "
+echo -n "Docker Container ID: @"
 sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 >> save.txt
+
+container_id=$( cat save.txt | grep -E "\@(.*)") 
 
 echo -e -n "Do you want to check Container list ${green}(y/n)${clear} : "
 read -r yes_no
 if [[ "$yes_no" == "y" ]]; then
 sudo docker ps
+fi
+
+echo -e -n "Do you want to check the IP address of Container ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y"]]; then
+sudo docker inspect $container_id | grep -E "(\"IPAddress\"..)[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}.[[:digit:]]{1,3}\""
 fi
