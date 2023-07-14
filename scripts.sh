@@ -34,6 +34,8 @@ read -r docker_subnet_ip
 echo -n "Docker Subnet key: " > save.txt
 sudo docker network create --subnet $docker_subnet_ip vxlan-net >> save.txt
 
+echo "" >> save.txt
+
 echo -e -n "Do you want to check the list of network list ${green}(y/n)${clear} : "
 read -r check_list
 if [[ "$check_list" == "y" ]]; then
