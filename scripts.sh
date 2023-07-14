@@ -75,3 +75,11 @@ read -r yes_no2
 if [[ "$yes_no2" == "y" ]]; then
 sudo docker inspect ${container_id:0:12} | grep -E "(\"IPAddress\")"
 fi
+
+
+echo -e "${green} [ 5 ] ${clear} ${yellow}Ping test ${docker_inside_ip} ${clear}"
+ping $docker_inside_ip -c 5
+
+echo -e "${yellow}Executing interactive at the docker${clear}"
+clear
+sudo docker exec -it ${container_id:0:12} bash apt-get update && apt-get install net-tools iputils-ping
