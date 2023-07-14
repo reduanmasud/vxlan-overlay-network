@@ -23,3 +23,9 @@ echo -e -n "${red} Enter IP address with CIDR (ip/cidr) : ${clear}"
 read -r docker_subnet_ip
 echo -n "Docker Subnet key: " >> save.txt
 sudo docker network create --subnet $docker_subnet_ip vxlan-net >> save.txt
+
+echo -e "Do you want to check the list of network list (y/n) : "
+read -r check_list
+if [[ "$check_list" == "y" ]]; then
+sudo docker network ls
+fi
