@@ -53,3 +53,8 @@ read -r docker_inside_ip
 echo -n "Docker Container ID: "
 sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000 >> save.txt
 
+echo -e -n "Do you want to check Container list ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+sudo docker ps
+fi
