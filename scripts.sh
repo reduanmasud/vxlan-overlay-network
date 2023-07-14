@@ -9,4 +9,5 @@ clear='\033[0m'
 echo -e "${green} [1 ] ${clear} Updating apt"
 sudo apt update
 
-
+echo -e "${green} [2 ] ${clear} Installing Docker.io ... ... ..."
+sudo apt install -y docker.io
