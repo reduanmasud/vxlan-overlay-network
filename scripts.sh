@@ -36,3 +36,8 @@ read -r check_ip_list
 if [[ "$check_ip_list" == "y" ]]; then
 sudo ip a
 fi
+
+echo -e " [4 ] Create and run docker container ..."
+echo -e -n "Enter IP address ${green}(ip)${clear} : "
+read -r docker_inside_ip
+sudo docker run -d --net vxlan-net --ip $docker_inside_ip ubuntu sleep 3000
