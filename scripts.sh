@@ -34,8 +34,16 @@ echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
 read static_ip
 sudo ip link set $device up
 sudo ifconfig $device $static_ip
-
 fi
+
+echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+echo -e -n "IPAddress ${green}(ip)${clear} : "
+read -r ip_addr
+ping $ip_addr -c 5
+fi
+
 
 echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
 sudo apt update
@@ -53,6 +61,14 @@ sudo docker network create --subnet $docker_subnet_ip vxlan-net >> subnet_key.tx
 cat subnet_key.txt >> save.txt
 echo "" >> save.txt
 
+echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+echo -e -n "IPAddress ${green}(ip)${clear} : "
+read -r ip_addr
+ping $ip_addr -c 5
+fi
+
 echo -e -n "Do you want to check the list of network list ${green}(y/n)${clear} : "
 read -r check_list
 if [[ "$check_list" == "y" ]]; then
@@ -64,6 +80,14 @@ echo -e -n "Do you want to check ip interface list ${green}(y/n)${clear} : "
 read -r check_ip_list
 if [[ "$check_ip_list" == "y" ]]; then
 sudo ip a
+fi
+
+echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+echo -e -n "IPAddress ${green}(ip)${clear} : "
+read -r ip_addr
+ping $ip_addr -c 5
 fi
 
 echo -e "${green} [ 4 ] ${clear} ${yellow}Create and run docker container ...${clear}"
@@ -149,6 +173,16 @@ ip a | grep "vxlen"
 echo -e "${green} [ 7 ] ${clear} ${yellow} make Interface UP ${clear}"
 sudo ip link set $vxlan_name up
 
+
+echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+echo -e -n "IPAddress ${green}(ip)${clear} : "
+read -r ip_addr
+ping $ip_addr -c 5
+fi
+
+
 #Get Bridge id
 ip a | grep -E -o -m 1 "br-(\w+)" > bridge_id.txt
 bridge_id=$(cat bridge_id.txt)
@@ -160,6 +194,13 @@ sudo brctl addif $bridge_id $vxlan_name
 echo -e "${green} [ 9 ] ${clear} ${yellow} Checking Route Table ${clear}"
 route -n
 
+echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "y" ]]; then
+echo -e -n "IPAddress ${green}(ip)${clear} : "
+read -r ip_addr
+ping $ip_addr -c 5
+fi
 
 echo -e -n "Do you want enter to the container ${green}(y/n)${clear} : "
 read -r yes_no
