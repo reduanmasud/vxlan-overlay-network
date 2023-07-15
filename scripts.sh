@@ -201,7 +201,7 @@ echo -e -n "IPAddress ${green}(ip)${clear} : "
 read -r ip_addr
 ping $ip_addr -c 5
 fi
-
+clear
 echo -e -n "Do you want enter to the container ${green}(y/n)${clear} : "
 read -r yes_no
 if [[ "$yes_no" == "y" ]]; then
