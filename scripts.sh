@@ -32,8 +32,9 @@ fi
 
 echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
 read static_ip
+sudo ip link set $device up
 sudo ifconfig $device $static_ip
-sudo ip link set $device UP
+
 fi
 
 echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
