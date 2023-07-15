@@ -147,7 +147,7 @@ echo -e "${yellow} Checking vxlan interface created ... ${clear}"
 ip a | grep "vxlen"
 
 echo -e "${green} [ 7 ] ${clear} ${yellow} make Interface UP ${clear}"
-sudo ip link set $vxlan_name UP
+sudo ip link set $vxlan_name up
 
 #Get Bridge id
 ip a | grep -E -o -m 1 "br-(\w+)" > bridge_id.txt
