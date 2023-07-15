@@ -15,7 +15,7 @@ read static_ip_y
 
 if [[ "$static_ip_y" == "y" ]]; then
 
-echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8) ${clear}"
+echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8 3: Type) ${clear}"
 read -r select_dev
 
 if [[ "$select_dev" == "0" ]]; then
@@ -28,6 +28,11 @@ fi
 
 if [[ "$select_dev" == "2" ]]; then
 device="enp0s8"
+fi
+
+if [[ "$select_dev" == "3" ]]; then
+echo -e -n "${yellow} Device Name: ${clear}"
+read -r device
 fi
 
 echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
@@ -148,7 +153,8 @@ echo -e -n "${yellow} Enter a id for vxlan: ${clear}"
 read -r vxlan_id
 echo -e -n "${yellow} Enter ip of 2nd host: ${clear}"
 read -r host2_ip
-echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8) ${clear}"
+
+echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8 3: Type) ${clear}"
 read -r select_dev
 
 if [[ "$select_dev" == "0" ]]; then
@@ -161,6 +167,11 @@ fi
 
 if [[ "$select_dev" == "2" ]]; then
 device="enp0s8"
+fi
+
+if [[ "$select_dev" == "3" ]]; then
+echo -e -n "${yellow} Device Name: ${clear}"
+read -r device
 fi
 
 echo -e "${yellow} Creating vxlan...${clear}"
