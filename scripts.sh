@@ -15,10 +15,25 @@ read static_ip_y
 
 if [[ "$static_ip_y" == "y" ]]; then
 
+echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8) ${clear}"
+read -r select_dev
+
+if [[ "$select_dev" == "0" ]]; then
+device="eth0"
+fi
+
+if [[ "$select_dev" == "1" ]]; then
+device="enp0s3"
+fi
+
+if [[ "$select_dev" == "2" ]]; then
+device="enp0s8"
+fi
+
 echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
 read static_ip
-sudo ifconfig enp0s3 $static_ip
-
+sudo ifconfig $device $static_ip
+sudo ip link set $device UP
 fi
 
 echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
@@ -108,7 +123,7 @@ echo -e -n "${yellow} Enter a id for vxlan: ${clear}"
 read -r vxlan_id
 echo -e -n "${yellow} Enter ip of 2nd host: ${clear}"
 read -r host2_ip
-echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3) ${clear}"
+echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8) ${clear}"
 read -r select_dev
 
 if [[ "$select_dev" == "0" ]]; then
@@ -119,6 +134,10 @@ if [[ "$select_dev" == "1" ]]; then
 device="enp0s3"
 fi
 
+if [[ "$select_dev" == "2" ]]; then
+device="enp0s8"
+fi
+
 echo -e "${yellow} Creating vxlan...${clear}"
 sudo ip link add $vxlan_name type vxlan id $vxlan_id remote $host2_ip dstport 4789 dev $device
 echo -e "${yellow} Created ... ${clear}"
@@ -127,7 +146,7 @@ echo -e "${yellow} Checking vxlan interface created ... ${clear}"
 ip a | grep "vxlen"
 
 echo -e "${green} [ 7 ] ${clear} ${yellow} make Interface UP ${clear}"
-sudo ip line set $vxlan_name UP
+sudo ip link set $vxlan_name UP
 
 #Get Bridge id
 ip a | grep -E -o -m 1 "br-(\w+)" > bridge_id.txt
