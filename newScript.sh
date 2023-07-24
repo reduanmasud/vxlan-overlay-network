@@ -155,6 +155,7 @@ ip a | grep -E -o -m 1 "br-(\w+)" > bridge_id.txt
 bridge_id=$(cat bridge_id.txt)
 
 echo -e "${green} [ 8 ] ${clear} ${yellow} Attaching newly created vxlan to bridge ${clear}"
+echo -e "${green}Bridge ID:${clear} ${yellow} $bridge_id ${clear}"
 sudo brctl addif $bridge_id $vxlan_name
 
 
