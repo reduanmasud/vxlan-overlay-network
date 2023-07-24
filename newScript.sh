@@ -12,7 +12,7 @@ clear='\033[0m'
 
 echo -e "${green} [ 1 ] ${clear} ${yellow} # Updating apt & Install net-tools ${clear}"
 sudo apt update
-sudp apt install -y net-tools
+sudo apt install -y net-tools
 
 echo -e "${green} [ 2 ] ${clear} ${yellow} Installing Docker.io ... ... ...${clear}"
 sudo apt install -y docker.io
