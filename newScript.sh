@@ -135,7 +135,7 @@ sudo ip link add $vxlan_name type vxlan id $vxlan_id remote $host2_ip dstport 47
 echo -e "${yellow} Created ... ${clear}"
 
 echo -e "${yellow} Checking vxlan interface created ... ${clear}"
-ip a | grep "vxlen"
+ip a | grep "vxlan"
 
 echo -e "${green} [ 7 ] ${clear} ${yellow} make Interface UP ${clear}"
 sudo ip link set $vxlan_name up
