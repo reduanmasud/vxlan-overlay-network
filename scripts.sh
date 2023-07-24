@@ -10,7 +10,7 @@ cyan='\033[0;36m'
 # Clear the color after that
 clear='\033[0m'
 
-ip a | grep down
+ip a | grep "DOWN"
 # Current VirtualVox has some issue with setting ip from GUI.
 # So, I you want to add ip manually  you can do that here pass y
 
