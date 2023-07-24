@@ -144,11 +144,11 @@ ping $docker_inside_ip -c 5
 
 echo -e "${yellow} Container id ${container_id:0:12} ${clear}"
 echo -e "${yellow} Updating... ${clear}"
-sudo docker exec -d ${container_id:0:12} sudo apt-get update
+sudo docker exec ${container_id:0:12} apt-get update
 echo -e "${yellow} Installing net-tools... ${clear}"
-sudo docker exec -d ${container_id:0:12} sudo apt-get install -y net-tools
+sudo docker exec ${container_id:0:12} apt-get install -y net-tools
 echo -e "${yellow} Installing iputils-ping... ${clear}"
-sudo docker exec -d ${container_id:0:12} sudo apt-get install -y iputils-ping
+sudo docker exec ${container_id:0:12} apt-get install -y iputils-ping
 
 # sudo docker exec -it ${container_id:0:12} bash
 echo -e -n "Press ${yellow}Enter${clear} to clear the screen and continue ..."
