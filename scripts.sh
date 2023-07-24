@@ -37,8 +37,9 @@ fi
 
 echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
 read static_ip
+sudo ip addr add $static_ip dev $device
 sudo ip link set $device up
-sudo ifconfig $device $static_ip
+# sudo ifconfig $device $static_ip
 fi
 
 echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
@@ -52,7 +53,7 @@ fi
 
 echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
 sudo apt update
-sudp apt install -y net-tools
+sudo apt install -y net-tools
 
 echo -e "${green} [ 2 ] ${clear} ${yellow}Installing Docker.io ... ... ...${clear}"
 sudo apt install -y docker.io
@@ -175,13 +176,15 @@ read -r device
 fi
 
 echo -e "${yellow} Creating vxlan...${clear}"
+# sudo ip link add vxlan-demo type vxlan id 100 remote 10.0.1.4 dstport 4789 dev eth0
 sudo ip link add $vxlan_name type vxlan id $vxlan_id remote $host2_ip dstport 4789 dev $device
 echo -e "${yellow} Created ... ${clear}"
 
 echo -e "${yellow} Checking vxlan interface created ... ${clear}"
-ip a | grep "vxlen"
+ip a | grep "vxlan"
 
 echo -e "${green} [ 7 ] ${clear} ${yellow} make Interface UP ${clear}"
+# sudo ip link set vxlan-demo up
 sudo ip link set $vxlan_name up
 
 
@@ -199,6 +202,15 @@ ip a | grep -E -o -m 1 "br-(\w+)" > bridge_id.txt
 bridge_id=$(cat bridge_id.txt)
 
 echo -e "${green} [ 8 ] ${clear} ${yellow} Attaching newly created vxlan to bridge ${clear}"
+echo -e "${green}Bridge ID:${clear} ${yellow} $bridge_id ${clear}"
+
+echo -e -n "Is Bridge ID is ok ${green}(y/n)${clear} : "
+read -r yes_no
+if [[ "$yes_no" == "n" ]]; then
+echo -e -n "Enter Bridge id ${green}(br-...)${clear} : "
+read -r bridge_id
+fi
+# sudo brctl addif br-c485be328b34 vxlan-demo
 sudo brctl addif $bridge_id $vxlan_name
 
 
