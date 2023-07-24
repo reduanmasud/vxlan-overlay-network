@@ -10,7 +10,11 @@ cyan='\033[0;36m'
 # Clear the color after that
 clear='\033[0m'
 
-echo -e -n "${yellow}Do you want to add static Ip to NAT interface (y/n) : ${clear}"
+ip a | grep down
+# Current VirtualVox has some issue with setting ip from GUI.
+# So, I you want to add ip manually  you can do that here pass y
+
+echo -e -n "${yellow}Do you want to add static Ip to network interface interface (y/n) : ${clear}"
 read static_ip_y
 
 if [[ "$static_ip_y" == "y" ]]; then
@@ -37,43 +41,46 @@ fi
 
 echo -e -n "${yello}Type your IP with CIDR (ip/CIDR) : ${clear}"
 read static_ip
+
+# sudo ip addr add 192.168.0.9/21 dev eth0
+# sudo ip link set eth0 up
+
 sudo ip addr add $static_ip dev $device
 sudo ip link set $device up
-# sudo ifconfig $device $static_ip
+
 fi
 
+# If you already setted up other VM too you can try an ping check
+echo -e "${yellow}If you already setted up other VM Type that VM's ip to check connection. ${clear}"
 echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
 read -r yes_no
 if [[ "$yes_no" == "y" ]]; then
 echo -e -n "IPAddress ${green}(ip)${clear} : "
 read -r ip_addr
-ping $ip_addr -c 5
+ping $ip_addr -c 3
 fi
 
 
-echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt${clear}"
+echo -e "${green} [ 1 ] ${clear} ${yellow}Updating apt ${clear}"
 sudo apt update
+
+echo -e "${yellow}Installing net tools ${clear}"
 sudo apt install -y net-tools
 
 echo -e "${green} [ 2 ] ${clear} ${yellow}Installing Docker.io ... ... ...${clear}"
 sudo apt install -y docker.io
 
 
-echo -e "${green} [ 3 ] ${clear} ${yellow}Creating subnet using docker network ... ... ...${clear}"
-echo -e -n "Enter IP address with CIDR ${green}(ip/cidr)${clear} : "
+echo -e "${green} [ 3 ] ${clear} ${yellow}Create Docker Subnet ${clear}"
+echo -e -n "Enter Subnet IP address with CIDR ${green}(Ex. 172.18.0.0/16)${clear} : "
 read -r docker_subnet_ip
 echo -n "Docker Subnet key: " > save.txt
+
+# sudo docker network create --subnet 172.18.0.0/16 vxlan-net
 sudo docker network create --subnet $docker_subnet_ip vxlan-net >> subnet_key.txt
+
 cat subnet_key.txt >> save.txt
 echo "" >> save.txt
-
-echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
-read -r yes_no
-if [[ "$yes_no" == "y" ]]; then
-echo -e -n "IPAddress ${green}(ip)${clear} : "
-read -r ip_addr
-ping $ip_addr -c 5
-fi
 
 echo -e -n "Do you want to check the list of network list ${green}(y/n)${clear} : "
 read -r check_list
@@ -81,17 +88,17 @@ if [[ "$check_list" == "y" ]]; then
 sudo docker network ls
 fi
 
-
 echo -e -n "Do you want to check ip interface list ${green}(y/n)${clear} : "
 read -r check_ip_list
 if [[ "$check_ip_list" == "y" ]]; then
 sudo ip a
 fi
 
-echo -e -n "Want a ping check ? ${green}(y/n)${clear} : "
+# check any ip from same subnet
+echo -e -n "Enter any ip from subnet to check ? ${green}(y/n)${clear} : "
 read -r yes_no
 if [[ "$yes_no" == "y" ]]; then
-echo -e -n "IPAddress ${green}(ip)${clear} : "
+echo -e -n "IP Address ${green}(ip)${clear} : "
 read -r ip_addr
 ping $ip_addr -c 5
 fi
@@ -113,7 +120,8 @@ echo ${container_id:0:12} >> save.txt
 
 
 container_id=$( cat container_id.txt ) 
-rm container_id.txt
+# rm container_id.txt
+echo -e "${green}Your Docker Container ID: ${clear}${yellow}$container_id${clear}"
 
 echo -e -n "Do you want to check Container list ${green}(y/n)${clear} : "
 read -r yes_no
@@ -128,18 +136,23 @@ sudo docker inspect ${container_id:0:12} | grep -E "(\"IPAddress\")"
 fi
 
 
+echo -e -n "Press ${yellow}Enter${clear} to continue ..."
+read -r garrbage
+
 echo -e "${green} [ 5 ] ${clear} ${yellow}Ping test ${docker_inside_ip} ${clear}"
 ping $docker_inside_ip -c 5
 
 echo -e "${yellow} Container id ${container_id:0:12} ${clear}"
 echo -e "${yellow} Updating... ${clear}"
-sudo docker exec ${container_id:0:12} sudo apt-get update
+sudo docker exec -d ${container_id:0:12} sudo apt-get update
 echo -e "${yellow} Installing net-tools... ${clear}"
-sudo docker exec ${container_id:0:12} sudo apt-get install -y net-tools
+sudo docker exec -d ${container_id:0:12} sudo apt-get install -y net-tools
 echo -e "${yellow} Installing iputils-ping... ${clear}"
-sudo docker exec ${container_id:0:12} sudo apt-get install -y iputils-ping
-clear
+sudo docker exec -d ${container_id:0:12} sudo apt-get install -y iputils-ping
+
 # sudo docker exec -it ${container_id:0:12} bash
+echo -e -n "Press ${yellow}Enter${clear} to clear the screen and continue ..."
+read -r garrbage
 
 echo -e -n "Do you want to check Bridge list ${green}(y/n)${clear} : "
 read -r yes_no
@@ -152,7 +165,7 @@ echo -e -n "${yellow} Enter vxlan name: ${clear}"
 read -r vxlan_name
 echo -e -n "${yellow} Enter a id for vxlan: ${clear}"
 read -r vxlan_id
-echo -e -n "${yellow} Enter ip of 2nd host: ${clear}"
+echo -e -n "${yellow} Enter ip of other VM interface: ${clear}"
 read -r host2_ip
 
 echo -e -n "${yellow} Select Device: (0: eth0, 1:enp0s3 2:enp0s8 3: Type) ${clear}"
