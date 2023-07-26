@@ -23,6 +23,7 @@ Install VirtualBox and create two VMs in that virtual box. In my case, I am usin
 
 1. We need to create a network. To do that, go to **Settings > Network > Host Only Network** Now click **Create**
 2. You will find something like `vboxnet0, vboxnet1 ...`
+3. Go to each VMs **Settings > Network > Adapter 2:** Now Set, **Attatched to:** `Host Only Network` And **Name:** `vboxnet0`
 
 ## Assign IP address from the same subnet to newly created VMs
 1. Start both VMs and check there `ip a` status
@@ -38,12 +39,12 @@ enp0s8: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN g
 ```
 2. Assign IP
 
-**Host 01**
+**VM Host 01**
 ```sh
 sudo ip addr add 192.68.56.2/21 dev enp0s8
 sudo ip link set enp0s8 up
 ```
-**Host 02**
+**VM Host 02**
 ```sh
 sudo ip addr add 192.68.56.3/21 dev enp0s8
 sudo ip link set enp0s8 up
@@ -88,7 +89,7 @@ ba345a328b21   vxlan-net   bridge    local
 
 ## Run docker container on top of newly created docker bridge network and try to ping docker bridge
 
-**Host 01**
+**VM Host 01**
 ```sh
 # running ubuntu container with "sleep 3000" and a static ip
 sudo docker run -d --net vxlan-net --ip 172.18.0.11 ubuntu sleep 3000
@@ -118,7 +119,7 @@ PING 172.18.0.1 (172.18.0.1) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.044/0.045/0.047/0.001 ms
 ```
 
-**Host 02**
+**VM Host 02**
 ```sh
 # running ubuntu container with "sleep 3000" and a static ip
 sudo docker run -d --net vxlan-net --ip 172.18.0.12 ubuntu sleep 3000
@@ -166,7 +167,7 @@ Do you remember we have created a bridge earlier? Now we need that Bridge ID aga
 
 Forgot that!? No problem. We can check that 
 
-**Host 01**
+**VM Host 01**
 ```sh
 # Checking our bridges
 brctl show
@@ -186,7 +187,7 @@ sudo brctl addif br-ba345a328b21 vxlan-demo
 
 ```
 
-**Host 02**
+**VM Host 02**
 ```sh
 # Checking our bridges
 brctl show
@@ -224,7 +225,7 @@ sudo brctl addif br-aa311a328b66 vxlan-demo
 
 ## Our entire configuration is complete. Now we can test it with a ping test.
 
-**Host 01**
+**VM Host 01**
 ```sh
 # Ping test host 1's docker container to host 2's container
 sudo docker exec 5a81c4b8502e ping 172.18.0.12 -c 2
@@ -239,7 +240,7 @@ rtt min/avg/max/mdev = 0.601/0.601/0.601/0.000 ms
 
 ```
 
-**Host 01**
+**VM Host 02**
 ```sh
 # Ping test host 2's docker container to host 1's container
 sudo docker exec 7b9235acea34 ping 172.18.0.11 -c 2
