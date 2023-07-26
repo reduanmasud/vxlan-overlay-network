@@ -172,7 +172,7 @@ Forgot that!? No problem. We can check that
 brctl show
 
 bridge name	            bridge id		STP enabled	            interfaces
-br-ba345a328b21	8000.0242f2770dab	no		veth725a704
+br-ba345a328b21	            8000.0242f2770dab	no		veth725a704
 docker0		8000.02429f18ffdf	no
 
 # Create the vxlan 
