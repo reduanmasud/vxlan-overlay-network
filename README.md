@@ -30,18 +30,46 @@ Install VirtualBox and create two VMs in that virtual box. In my case, I am usin
 # Check all interfaces that are down. Where we can assign ip address
 ip a | grep DOWN
 ```
-You will see like this
+You will see like this:
 ```sh
 enp0s8: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
 # ^^^^
-# this is the name of our interface, it can be **eth0**, **eno1** any thing
+# this is the name of our interface, it can be **eth0**, **eno1** or anything else
 ```
 2. Assign IP
+
 **Host 01**
 ```sh
 sudo ip addr add 192.68.56.2/21 dev enp0s8
+sudo ip link set enp0s8 up
 ```
 **Host 02**
 ```sh
 sudo ip addr add 192.68.56.3/21 dev enp0s8
+sudo ip link set enp0s8 up
 ```
+Now you can check agaig using `ip a` is every thing is ok.
+
+## Install Necessery tools
+**Both VMs**
+```sh
+sudo apt update
+sudo apt install -y net-tools docker.io
+```
+
+## Create subnet using `docker network` utility tools
+```sh
+
+sudo docker network create --subnet 172.18.0.0/16 vxlan-net
+
+```
+`
+**docker:** This is the main command-line interface for interacting with Docker, a popular containerization platform used for creating and managing containers.
+
+**network create:** This subcommand is used to create a new Docker network. Docker networks allow containers to communicate with each other and with external networks.
+
+**--subnet 172.18.0.0/16:** This flag specifies the subnet range for the Docker network. In this case, it is set to "172.18.0.0/16", which means that the network will use IP addresses from the range 172.18.0.0 to 172.18.255.255. It's worth noting that this range is quite large and can accommodate a large number of IP addresses.
+
+**vxlan-net:** This is the name of the network being created. You can choose any name you like, and it will be used as an identifier for the network within the Docker environment.
+`
+
