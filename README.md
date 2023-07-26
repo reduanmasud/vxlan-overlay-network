@@ -207,6 +207,7 @@ sudo brctl addif br-aa311a328b66 vxlan-demo
 ```
 
 **Explanation** : `sudo ip link add vxlan-demo type vxlan id 100 remote 192.68.56.3 dstport 4789 dev enp0s8`
+
 **ip:** "ip" is a command-line utility in Linux used for network configuration. It can be used to view and modify network interfaces, routes, and other networking parameters.
 
 **link add vxlan-demo:** This part of the command instructs the "ip" utility to create a new network link with the name "vxlan-demo." A network link is an interface that can be used to send and receive data over the network.
@@ -221,4 +222,36 @@ sudo brctl addif br-aa311a328b66 vxlan-demo
 
 **dev enp0s8:** The "dev" option specifies the physical network interface that will be used to send and receive VXLAN traffic. In this case, the VXLAN interface will use "enp0s8" as its underlying physical interface.
 
+## Our entire configuration is complete. Now we can test it with a ping test.
 
+**Host 01**
+```sh
+# Ping test host 1's docker container to host 2's container
+sudo docker exec 5a81c4b8502e ping 172.18.0.12 -c 2
+
+PING 172.18.0.12 (172.18.0.12) 56(84) bytes of data.
+64 bytes from 172.18.0.12: icmp_seq=1 ttl=64 time=0.601 ms
+64 bytes from 172.18.0.12: icmp_seq=2 ttl=64 time=0.601 ms
+
+--- 172.18.0.12 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1018ms
+rtt min/avg/max/mdev = 0.601/0.601/0.601/0.000 ms
+
+```
+
+**Host 01**
+```sh
+# Ping test host 2's docker container to host 1's container
+sudo docker exec 7b9235acea34 ping 172.18.0.11 -c 2
+
+PING 172.18.0.12 (172.18.0.12) 56(84) bytes of data.
+64 bytes from 172.18.0.12: icmp_seq=1 ttl=64 time=0.601 ms
+64 bytes from 172.18.0.12: icmp_seq=2 ttl=64 time=0.601 ms
+
+--- 172.18.0.12 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1018ms
+rtt min/avg/max/mdev = 0.601/0.601/0.601/0.000 ms
+
+```
+
+## Our ping test successful so our connection is working 🎉
