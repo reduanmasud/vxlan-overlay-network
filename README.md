@@ -1,9 +1,10 @@
-# Multi-container Host networking demo using Vxlan overlay network at virtual box
+# VirtualBox multi-host docker networking with VXLAN overlay networks
 ## Diagram
 ![Diagram](https://github.com/reduanmasud/vxlan-overlay-network/blob/main/vxlan-docker-overlay-network.png)
 
 ## The Scenerio
-Here, I have two virtual hosts. VM-1 and VM-2. Our goal is to facilitate communication between two containers.
+In this scenario, we have two virtual hosts, VM-1 and VM-2, with containers running on each host. The goal is to establish smooth communication between the containers across the hosts. To achieve this, we will employ a networking technology called VXLAN (Virtual Extensible LAN).
+
 
 ## Overview of what we are going to do
 
