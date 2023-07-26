@@ -58,10 +58,23 @@ sudo apt install -y net-tools docker.io
 ```
 
 ## Create subnet using `docker network` utility tools
-```sh
 
+**Both VMs**
+```sh
+# create docker bridge network
 sudo docker network create --subnet 172.18.0.0/16 vxlan-net
 
+ba345a328b21ed1e93492a8ecs9asc5f5426e42adf52ef7a92394fe0192715as
+
+sudo docker network ls
+
+NETWORK ID     NAME        DRIVER    SCOPE
+5426e42adf52   bridge      bridge    local
+d1f9b80443c4   host        host      local
+922f1ff12422   none        null      local
+ba345a328b21   vxlan-net   bridge    local
+# ^^^^^^^^^^
+# This is our Bridge ID.
 ```
 `
 **docker:** This is the main command-line interface for interacting with Docker, a popular containerization platform used for creating and managing containers.
@@ -72,4 +85,67 @@ sudo docker network create --subnet 172.18.0.0/16 vxlan-net
 
 **vxlan-net:** This is the name of the network being created. You can choose any name you like, and it will be used as an identifier for the network within the Docker environment.
 `
+
+## Run docker container on top of newly created docker bridge network and try to ping docker bridge
+
+**Host 01**
+```sh
+# running ubuntu container with "sleep 3000" and a static ip
+sudo docker run -d --net vxlan-net --ip 172.18.0.11 ubuntu sleep 3000
+
+5a81c4b8502e0b5e8369f211e65e6fdabf611d01353cb4dc3ff646166ce18e26
+
+# check the container running or not
+sudo docker ps
+
+CONTAINER ID   IMAGE     COMMAND        CREATED         STATUS         PORTS     NAMES
+5a81c4b8502e   ubuntu    "sleep 3000"   7 seconds ago   Up 6 seconds             interesting_turing
+
+# check the IPAddress to make sure that the ip assigned properly
+sudo docker inspect 5a81c4b8502e | grep IPAddress
+            "SecondaryIPAddresses": null,
+            "IPAddress": "",
+                    "IPAddress": "172.18.0.11",
+
+# ping the docker bridge ip to see whether the traffic can pass
+ping 172.18.0.1 -c 2
+PING 172.18.0.1 (172.18.0.1) 56(84) bytes of data.
+64 bytes from 172.18.0.1: icmp_seq=1 ttl=64 time=0.047 ms
+64 bytes from 172.18.0.1: icmp_seq=2 ttl=64 time=0.044 ms
+
+--- 172.18.0.1 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1010ms
+rtt min/avg/max/mdev = 0.044/0.045/0.047/0.001 ms
+```
+
+**Host 02**
+```sh
+# running ubuntu container with "sleep 3000" and a static ip
+sudo docker run -d --net vxlan-net --ip 172.18.0.12 ubuntu sleep 3000
+
+7b9235acea340b5e8369f211e65e6fdabf611d01353cb4dc3ff646166ce18e26
+
+# check the container running or not
+sudo docker ps
+
+CONTAINER ID   IMAGE     COMMAND        CREATED         STATUS         PORTS     NAMES
+7b9235acea34   ubuntu    "sleep 3000"   7 seconds ago   Up 6 seconds             funny_mac
+
+# check the IPAddress to make sure that the ip assigned properly
+sudo docker inspect 7b9235acea34 | grep IPAddress
+            "SecondaryIPAddresses": null,
+            "IPAddress": "",
+                    "IPAddress": "172.18.0.11",
+
+# ping the docker bridge ip to see whether the traffic can pass
+ping 172.18.0.1 -c 2
+PING 172.18.0.1 (172.18.0.1) 56(84) bytes of data.
+64 bytes from 172.18.0.1: icmp_seq=1 ttl=64 time=0.047 ms
+64 bytes from 172.18.0.1: icmp_seq=2 ttl=64 time=0.044 ms
+
+--- 172.18.0.1 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1010ms
+rtt min/avg/max/mdev = 0.044/0.045/0.047/0.001 ms
+```
+
 
