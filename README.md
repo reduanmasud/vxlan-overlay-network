@@ -152,14 +152,73 @@ rtt min/avg/max/mdev = 0.044/0.045/0.047/0.001 ms
 
 **Both VMs**
 ```sh
-# updating docker container and installing necessery tools
+# updating docker container and installing the necessary tools
 sudo docker exec 7b9235acea34 apt-get update
 sudo docker exec 7b9235acea34 apt-get install -y net-tools iputils-ping
 #                ^^^^^^^^^^^^
-#                use your docker container ID, this should be different in different VMs docker
+#                use your docker container ID, this should be different in different VMs docker container.
 #                Instead of Container ID you can use NAME also such as in my case interesting_turing, funny_mac
 
 ```
 
+## Create vxlan
+Do you remember we have created a bridge earlier? Now we need that Bridge ID again. 
+
+Forgot that!? No problem. We can check that 
+
+**Host 01**
+```sh
+# Checking our bridges
+brctl show
+
+bridge name	            bridge id		STP enabled	            interfaces
+br-ba345a328b21	8000.0242f2770dab	no		veth725a704
+docker0		8000.02429f18ffdf	no
+
+# Create the vxlan 
+sudo ip link add vxlan-demo type vxlan id 100 remote 192.68.56.3 dstport 4789 dev enp0s8
+
+# make the interface up
+sudo ip link set vxlan-demo up
+
+# Now add the docker Bridge with the vxlan
+sudo brctl addif br-ba345a328b21 vxlan-demo
+
+```
+
+**Host 02**
+```sh
+# Checking our bridges
+brctl show
+
+bridge name	            bridge id		STP enabled	            interfaces
+br-aa311a328b66	8000.0242f2770dab	no		veth725a704
+docker0		8000.02429f18ffdf	no
+
+# Create the vxlan 
+sudo ip link add vxlan-demo type vxlan id 100 remote 192.68.56.3 dstport 4789 dev enp0s8
+
+# make the interface up
+sudo ip link set vxlan-demo up
+
+# Now add the docker Bridge with the vxlan
+sudo brctl addif br-aa311a328b66 vxlan-demo
+
+```
+
+**Explanation** : `sudo ip link add vxlan-demo type vxlan id 100 remote 192.68.56.3 dstport 4789 dev enp0s8`
+**ip:** "ip" is a command-line utility in Linux used for network configuration. It can be used to view and modify network interfaces, routes, and other networking parameters.
+
+**link add vxlan-demo:** This part of the command instructs the "ip" utility to create a new network link with the name "vxlan-demo." A network link is an interface that can be used to send and receive data over the network.
+
+**type vxlan:** Here, we specify the type of network link we want to create, which is a VXLAN interface.
+
+**id 100:** This option sets the VXLAN Network Identifier (VNI) to 100. The VNI is used to segment traffic within the VXLAN network, allowing multiple isolated virtual networks to coexist on the same physical network infrastructure.
+
+**remote 192.68.56.3:** This option specifies the IP address of the remote endpoint for the VXLAN tunnel. The VXLAN packets will be encapsulated and sent to this remote IP address.
+
+**dstport 4789:** VXLAN uses UDP (User Datagram Protocol) for encapsulation, and this option sets the destination port to 4789. VXLAN packets will be sent to this port number on the remote endpoint.
+
+**dev enp0s8:** The "dev" option specifies the physical network interface that will be used to send and receive VXLAN traffic. In this case, the VXLAN interface will use "enp0s8" as its underlying physical interface.
 
 
