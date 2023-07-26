@@ -107,7 +107,7 @@ sudo docker inspect 5a81c4b8502e | grep IPAddress
             "IPAddress": "",
                     "IPAddress": "172.18.0.11",
 
-# ping the docker bridge ip to see whether the traffic can pass
+# ping the docker bridge ip to see whether traffic can pass
 ping 172.18.0.1 -c 2
 PING 172.18.0.1 (172.18.0.1) 56(84) bytes of data.
 64 bytes from 172.18.0.1: icmp_seq=1 ttl=64 time=0.047 ms
@@ -137,7 +137,7 @@ sudo docker inspect 7b9235acea34 | grep IPAddress
             "IPAddress": "",
                     "IPAddress": "172.18.0.11",
 
-# ping the docker bridge ip to see whether the traffic can pass
+# ping the docker bridge ip to see whether traffic can pass
 ping 172.18.0.1 -c 2
 PING 172.18.0.1 (172.18.0.1) 56(84) bytes of data.
 64 bytes from 172.18.0.1: icmp_seq=1 ttl=64 time=0.047 ms
@@ -147,5 +147,19 @@ PING 172.18.0.1 (172.18.0.1) 56(84) bytes of data.
 2 packets transmitted, 2 received, 0% packet loss, time 1010ms
 rtt min/avg/max/mdev = 0.044/0.045/0.047/0.001 ms
 ```
+
+## Install some necessery tools to docker container
+
+**Both VMs**
+```sh
+# updating docker container and installing necessery tools
+sudo docker exec 7b9235acea34 apt-get update
+sudo docker exec 7b9235acea34 apt-get install -y net-tools iputils-ping
+#                ^^^^^^^^^^^^
+#                use your docker container ID, this should be different in different VMs docker
+#                Instead of Container ID you can use NAME also such as in my case interesting_turing, funny_mac
+
+```
+
 
 
