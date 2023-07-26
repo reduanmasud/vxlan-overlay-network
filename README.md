@@ -192,7 +192,7 @@ sudo brctl addif br-ba345a328b21 vxlan-demo
 brctl show
 
 bridge name	            bridge id		STP enabled	            interfaces
-br-aa311a328b66	8000.0242f2770dab	no		veth725a704
+br-aa311a328b66         8000.0242f2770dab	no                      veth725a704
 docker0		8000.02429f18ffdf	no
 
 # Create the vxlan 
